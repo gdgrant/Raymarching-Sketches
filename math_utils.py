@@ -88,13 +88,13 @@ def rotation_matrix(a=0., b=0., c=0.):
 
 
 @njit(parallel=True)
-def find_normal(p, sdf, eps=1e-6):
+def find_normal(p, sdf, eps=float32(1e-6)):
 
 	vnorm = vec3(0.,0.,0.)
 	for i in prange(3):
 
 		ax = vec3(0.,0.,0.)
-		ax[i] = 1
+		ax[i] = float32(1.)
 
 		vnorm[i] = sdf(p + eps*ax) - sdf(p - eps*ax)
 

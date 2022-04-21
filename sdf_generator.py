@@ -1,5 +1,5 @@
 import numpy as np
-from numba import njit, float32, prange, literal_unroll
+from numba import jit, njit, float32, prange, literal_unroll
 from numba.experimental import jitclass
 from PIL import Image
 
@@ -30,7 +30,7 @@ def sphere():
 
 def cube():
 
-	@njit
+	@njit('float32(float32[:])')
 	def sdf(p):
 		return norm(np.maximum(np.abs(p) - 1., 0.))
 
@@ -116,6 +116,33 @@ def mirror_z(sdf1):
 
 	return sdf
 
+def rotate_x(a, sdf1):
+
+	r = np.array([ \
+		[1, 0, 0],
+		[0, np.cos(a), -np.sin(a)],
+		[0, np.sin(a), np.cos(a)]], dtype=np.float32)
+
+	rinv = np.transpose(r)
+
+	# q = rinv @ vec3(1., 2., 3.)
+	# print(q)
+	# print(sdf1(q))
+	# print(q.dtype)
+
+	# q = np.dot(rinv, vec3(1., 2., 3.))
+	# print(q)
+	# print(sdf1(q))
+	# print(q.dtype)
+	# quit()
+
+	@njit('float32(float32[:])')
+	def sdf(p):
+		q = np.dot(rinv, p)
+		return sdf1(q)
+
+	return sdf
+
 
 #########################
 ### Binary Operations ###
@@ -170,7 +197,6 @@ def menger(n=3):
 
 	box = cube()
 	cross = infinite_cross()
-
 
 	@njit
 	def sdf(p):

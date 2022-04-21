@@ -80,7 +80,8 @@ sdf = scale(menger_sponge_sdf(), vec3(5,5,5))
 # sdf = repeat_inf(intersect(sph_sdf, scale(cube_sdf, vec3(0.5, 0.5, 2))), vec3(4,4,4))
 
 
-from sdf_generator import sphere, repeat, scale, cube, op_round, infinite_cross, translate, mirror_x, mirror_y, mirror_z, menger
+from sdf_generator import sphere, repeat, scale, cube, op_round, \
+	infinite_cross, translate, mirror_x, mirror_y, mirror_z, menger, rotate_x
 
 # sdf = repeat(12.5, scale(1.25, cube()))
 # sdf = op_round(0.5, sdf)
@@ -91,7 +92,8 @@ from sdf_generator import sphere, repeat, scale, cube, op_round, infinite_cross,
 # sdf = union(sdf, scale(0.25, sphere()))
 
 # sdf = scale(vec3(1.,1.,1.), menger())
-sdf = op_round(0.005, scale(5., menger(5)))
+# sdf = op_round(0.005, scale(5., menger(5)))
+sdf = rotate_x(np.float32(np.pi/4), cube())
 
 
 lights = ( vec3(-10, 10, 10), vec3(0, -20, 50) )
