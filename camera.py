@@ -1,6 +1,7 @@
 import numpy as np
 from numba import njit, float32
 from numba.experimental import jitclass
+from numba.typed import List as nbList
 
 from math_utils import *
 
@@ -14,15 +15,18 @@ class Ray:
 	def advance(self, distance):
 		self.ori = self.ori + np.float32(distance) * self.dir
 
+
 @njit
 def generate_rays(x_screen, y_screen, cam_pos, p0, m, l):
 
-	camera_rays = []
+	# camera_rays = []
+	camera_rays = nbList()
 	for cx in x_screen:
 		for cy in y_screen:
+			
 			p1 = cam_pos + cx*m + cy*l
-
 			R = Ray(p1, unit(p1 - p0))
+
 			camera_rays.append(R)
 
 	return camera_rays

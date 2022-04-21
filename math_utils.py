@@ -90,10 +90,10 @@ def rotation_matrix(a=0., b=0., c=0.):
 @njit(parallel=True)
 def find_normal(p, sdf, eps=1e-6):
 
-	vnorm = np.empty(3, dtype=np.float32)
-	for i in prange(p.shape[0]):
+	vnorm = vec3(0.,0.,0.)
+	for i in prange(3):
 
-		ax = np.array([0,0,0], dtype=np.float32)
+		ax = vec3(0.,0.,0.)
 		ax[i] = 1
 
 		vnorm[i] = sdf(p + eps*ax) - sdf(p - eps*ax)

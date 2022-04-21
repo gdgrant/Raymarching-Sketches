@@ -22,7 +22,7 @@ def scale(sdf, d):
 
 	@njit
 	def scaled_sdf(p):
-		return sdf(p / d)
+		return min(d) * sdf(p / d)
 
 	return scaled_sdf
 
@@ -74,6 +74,15 @@ def cube_sdf(p):
 	return np.float32(max(q[0], q[1], q[2]) - 1.)
 
 
+def repeat_inf(sdf, c):
+
+	@njit
+	def infrepeat_sdf_func(p):
+		q = np.mod(p+0.5*c, c) - 0.5*c
+		return sdf(q)
+
+	return infrepeat_sdf_func
+
 
 
 def infcross_sdf():
@@ -115,8 +124,8 @@ def menger_sponge_sdf():
 		for i in range(3):
 
 			a = np.fmod(p * s, 2.) - 1.
-			r = 1. - 3.*np.abs(a)
 			s *= 3.
+			r = np.abs(1. - 3.*np.abs(a))
 
 			c = infcross(r)/s
 			d = np.maximum(d, c)
